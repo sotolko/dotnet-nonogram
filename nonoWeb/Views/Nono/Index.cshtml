@@ -1,0 +1,123 @@
+﻿@using nonoWeb.Models
+@model NonoModel
+
+@{
+    ViewData["Title"] = "NonoGram";
+}
+
+<style>
+    .btn-squared-default
+    {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 10px;
+    }
+
+        .btn-squared-default:hover
+        {
+            border: 3px solid white;
+            font-weight: 800;
+        }
+
+    .btn-squared-default-plain
+    {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 10px;
+    }
+
+        .btn-squared-default-plain:hover
+        {
+            border: 0px solid white;
+        }
+</style>
+
+@{ string color; }
+
+@if(@Model.Guess.isSolved() == true)
+{
+    color = "success";
+}
+else
+{
+    color = "primary";
+}
+<div class="container text-xs-center">
+<center>
+<h1 class="display-4">NonoGram</h1>
+
+<br />
+
+<a href="/Nono" class="btn btn-primary btn-lg active" role="button" aria-pressed="true"> New game</a>
+<hr />
+</center>
+    <div class="row">
+        <div class="col-lg-4">
+        <h2>Scores</h2>
+        <ol>
+            @foreach (var score in Model.Scores)
+            {
+                <li>@score.Player @score.Seconds</li>
+            }
+        </ol>
+        </div>
+        <div class="col-lg-8">
+            <center>
+                <table>
+            <tr>
+                <th></th>
+
+            @for(int row = 0;row < @Model.Field.RowCount; row++)
+                {
+                    int[,] colCoord = Model.Field.getColCoord(@Model.Field.RowCount, @Model.Field.ColumnCount);
+                        <th>
+                        @for(int col = 0;col < @Model.Field.ColumnCount; col++)
+                        {
+                            if(colCoord[row, col] != 0)
+                            {
+
+                                @colCoord[row, col];
+                            }
+                        }
+                        </th>
+                }
+                </tr>
+                
+            @for(int row = 0;row < @Model.Field.RowCount; row++)
+                {
+                        int[,] rowCoord = Model.Field.getRowCoord(@Model.Field.RowCount, @Model.Field.ColumnCount);
+                        <tr>
+                        <th>
+                        @for(int col = 0;col < @Model.Field.ColumnCount; col++)
+                        {
+                            if(rowCoord[row, col] != 0)
+                            {
+                                @rowCoord[row, col];
+                            }
+                        }
+                        </th>
+                        @for(int col = 0;col < @Model.Field.ColumnCount; col++)
+                        {
+                            var tile = Model.Guess[row, col];
+
+                            <th>
+
+                            @if(tile.Value == 1)
+                            {
+                                @Html.ActionLink(" ", "Move", new { x = row, y = col }, new {@class = "btn btn-squared-default btn-"+color});
+                            }
+                            else
+                            {
+                                @Html.ActionLink(" ", "Move", new { x = row, y = col }, new {@class = "btn btn-squared-default btn-light"});
+                            }
+
+                            </th>
+                        }
+
+                      </tr>
+                }
+    </table>
+            </center>
+        </div>
+    </div>
+</div>
